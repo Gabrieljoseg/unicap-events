@@ -1,5 +1,8 @@
 package com.example.events.service; 
 
+import com.example.events.repository.EventoRepository;
+import com.example.events.model.Evento;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
