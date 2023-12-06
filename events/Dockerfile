@@ -10,10 +10,11 @@ COPY .mvn .mvn
 COPY pom.xml .
 COPY src src
 
-# Construir o aplicativo com Maven
-RUN apt install maven -y
-RUN mvn clean
-RUN mvn install 
+# Dar permissão de execução ao Maven Wrapper
+RUN chmod +x ./mvnw
+
+# Construir o aplicativo com Maven Wrapper
+RUN ./mvnw clean install
 
 # Segunda etapa da construção, para obter uma imagem mais limpa e leve
 FROM openjdk:17-jdk-alpine
