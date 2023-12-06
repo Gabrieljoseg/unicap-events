@@ -1,17 +1,27 @@
 # Usar a imagem base do OpenJDK 17
+FROM openjdk:17 as build
+
+# Definir o diretório de trabalho no container
+WORKDIR /workspace/app
+
+# Copiar o arquivo pom.xml e baixar as dependências
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copiar os arquivos do projeto
+COPY src src
+
+# Construir a aplicação
+RUN mvn clean package -DskipTests
+
+# Usar a imagem base do OpenJDK 17 para a imagem final
 FROM openjdk:17
 
-# Definir o diretório de trabalho dentro do container
+# Definir o diretório de trabalho no container
 WORKDIR /app
 
-# Copiar todos os arquivos do diretório atual para o diretório de trabalho no container
-COPY . .
-
-# Executar o Maven para limpar e construir o projeto
-RUN mvn clean install
-
-# Copiar o arquivo JAR gerado para o diretório de trabalho (ajuste o caminho do arquivo JAR conforme necessário)
-COPY target/events-0.0.1-SNAPSHOT.jar /app/events.jar
+# Copiar o arquivo JAR do estágio de build
+COPY --from=build /workspace/app/target/events-0.0.1-SNAPSHOT.jar /app/events.jar
 
 # Comando para executar o aplicativo
-CMD ["java", "-jar", "/app/events.jar"]
+CMD ["java", "-jar", "events.jar"]
