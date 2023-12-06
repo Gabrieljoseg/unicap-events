@@ -1,10 +1,14 @@
 package com.example.eventos.model;
 
-import lombok.Data;
-
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.Data;
 
 @Data
 @Entity
@@ -17,4 +21,6 @@ public class Categoria {
     
     @OneToMany(mappedBy = "categoria")
     private Set<EventoCategoria> eventos = new HashSet<>();
+    
+    // Add constructors, getters, and setters here
 }

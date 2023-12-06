@@ -1,9 +1,13 @@
 package com.example.eventos.model;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.Data;
 
 @Data
@@ -18,4 +22,6 @@ public class Estudante {
     
     @OneToMany(mappedBy = "estudante")
     private Set<Inscricao> inscricoes = new HashSet<>();
+    
+    // Add constructors, getters, and setters here
 }
