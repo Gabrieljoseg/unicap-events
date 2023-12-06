@@ -1,31 +1,27 @@
-# Usar a imagem base do Debian e instalar o Java e o Maven
-FROM debian:buster as build
-
-# Instalar o Java e o Maven
-RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk maven
+# Utilizar uma imagem base do OpenJDK para rodar a aplicação
+FROM openjdk:17-jdk-alpine as build
 
 # Definir o diretório de trabalho no container
 WORKDIR /workspace/app
 
-# Copiar o arquivo pom.xml e baixar as dependências
+# Copiar o arquivo pom.xml e os arquivos de código fonte
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
-RUN mvn dependency:go-offline
-
-# Copiar os arquivos do projeto
 COPY src src
 
-# Construir a aplicação
-RUN mvn clean package -DskipTests
+# Construir o aplicativo com Maven
+RUN ./mvnw install -DskipTests
 
-# Usar a imagem base do OpenJDK 17 para a imagem final
-FROM openjdk:17
+# Segunda etapa da construção, para obter uma imagem mais limpa e leve
+FROM openjdk:17-jdk-alpine
+VOLUME /tmp
 
-# Definir o diretório de trabalho no container
-WORKDIR /app
+# Copiar o arquivo JAR do estágio de construção para o estágio de execução
+COPY --from=build /workspace/app/target/events-0.0.1-SNAPSHOT.jar app.jar
 
-# Copiar o arquivo JAR do estágio de build
-COPY --from=build /workspace/app/target/events-0.0.1-SNAPSHOT.jar /app/events.jar
+# Indicar que o container irá escutar na porta 8080
+EXPOSE 8080
 
-# Comando para executar o aplicativo
-CMD ["java", "-jar", "events.jar"]
+# Comando para executar a aplicação
+ENTRYPOINT ["java","-jar","/app.jar"]
