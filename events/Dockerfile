@@ -1,9 +1,9 @@
-# Usar a imagem base do OpenJDK 17
-FROM openjdk:17 as build
+# Usar a imagem base do Debian e instalar o Java e o Maven
+FROM debian:buster as build
 
-# Instalar o Maven
+# Instalar o Java e o Maven
 RUN apt-get update && \
-    apt-get install -y maven
+    apt-get install -y openjdk-17-jdk maven
 
 # Definir o diretório de trabalho no container
 WORKDIR /workspace/app
