@@ -1,6 +1,10 @@
 # Usar a imagem base do OpenJDK 17
 FROM openjdk:17 as build
 
+# Instalar o Maven
+RUN apt-get update && \
+    apt-get install -y maven
+
 # Definir o diretório de trabalho no container
 WORKDIR /workspace/app
 
