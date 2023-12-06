@@ -11,9 +11,9 @@ COPY pom.xml .
 COPY src src
 
 # Construir o aplicativo com Maven
-
-RUN mvn clean package
-RUN mvn install
+RUN apt install maven -y
+RUN mvn clean
+RUN mvn install 
 
 # Segunda etapa da construção, para obter uma imagem mais limpa e leve
 FROM openjdk:17-jdk-alpine
